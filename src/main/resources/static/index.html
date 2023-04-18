@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>SpringBoot HomeWork 8</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="index.js"></script>
+</head>
+
+<body ng-controller="productController">
+
+<div class="header">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <h3><a class="nav-link active" aria-current="page" href="index.html">Product List</a></h3>
+        </li>
+        <li class="nav-item">
+            <h3><a class="nav-link active" aria-current="page" href="customers.html">Customer List</a></h3>
+        </li>
+    </ul>
+</div>
+
+<div class="container">
+    <table class="table table-hover">
+        <tr>
+            <form name="filterForm">
+                <td>
+                    <label>Price Filter</label>
+                </td>
+                <td>
+                    <label for="costMin">Min</label>
+                </td>
+                <td>
+                    <input class="form-control" type="number" name="costMin" id="costMin" size="50" step="0.01" min="0.01" pattern="/^\d+(.\d+)?$/" required/>
+                </td>
+                <td>
+                    <label for="costMax">Max</label>
+                </td>
+                <td>
+                    <input class="form-control" type="number" name="costMax" id="costMax" size="50" step="0.01" min="0.01" pattern="/^\d+(.\d+)?$/" required/>
+                </td>
+                <td>
+                    <label>
+                        <button ng-click="applyFilter()" class="btn btn-warning" size="10">Apply filter</button>
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <button ng-click="reset()" class="btn btn-info" size="10">Reset filter</button>
+                    </label>
+                </td>
+            </form>
+        </tr>
+    </table>
+
+
+    <table class="table table-hover">
+        <tr>
+            <td>ID</td>
+            <td>Title</td>
+            <td>Cost</td>
+            <td>Delete product</td>
+        </tr>
+
+        <tbody>
+
+        <tr ng-repeat="p in ProductsList">
+            <td>{{p.id}}</td>
+            <td>{{p.productName}}</td>
+            <td>{{p.productCost}}</td>
+            <td>
+                <button class="btn btn-danger" ng-click="deleteProductById(p.id, p.productName, p.productCost)">
+                    Delete
+                    product
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <form id="addProduct" method="post" lang="en">
+                <td></td>
+                <td>
+                    <label>
+                        <input type="text" name="titleNew" size="50" autofocus placeholder="input title here"
+                               required/>
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="number" name="costNew" size="15" step="0.01" min="0.01"
+                               pattern="/^\d+(.\d+)?$/"
+                               placeholder="in format 9.99" required/>
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input class="btn btn-success" value="Add product" ng-click="addProduct()" size="10"/>
+                    </label>
+                </td>
+            </form>
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    <input type="number" name="finderId" size="5" step="1" min="1" pattern="/^\d+"
+                           placeholder="ID" required/>
+                </label>
+            </td>
+            <td></td>
+            <td></td>
+            <td>
+                <label>
+                    <input class="btn btn-info" value="Find product" ng-click="findProduct(p.id)" size="10"/>
+                </label></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
