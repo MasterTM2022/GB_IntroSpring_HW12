@@ -12,41 +12,39 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/api/v1/products")
 
 public class ProductController {
 
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/all-products")
+    @GetMapping("")
     public List<Product> findAllProducts() {
         return productService.findAllProducts();
     }
 
-    @GetMapping("/product/filtered")
-    public List<Product> findAllBetween(@RequestParam Double costMin, @RequestParam Double costMax) {
-        return productService.findAllBetween(costMin, costMax);
-    }
-
-
-    @GetMapping("/product/{id}")
+    @GetMapping("/{id}")
     public ArrayList<Optional<Product>> findById(@PathVariable Long id) {
         return productService.findProductById(id);
     }
 
-
-    @PostMapping("/add")
+    @PostMapping("")
     public void addProduct(@RequestParam String title, @RequestParam Double cost) {
         productService.addProduct(title, cost);
     }
 
-    @GetMapping("/product/min-max")
+    @GetMapping("/filtered")
+    public List<Product> findAllBetween(@RequestParam Double costMin, @RequestParam Double costMax) {
+        return productService.findAllBetween(costMin, costMax);
+    }
+
+    @GetMapping("/min-max")
     public List<Double> findFullIntervalCost() {
         return productService.findFullIntervalCost();
     }
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteProductById(@PathVariable("id") Long id) {
         if (productService.findProductById(id).size() == 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

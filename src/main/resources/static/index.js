@@ -1,10 +1,10 @@
 let app = angular.module('app', []);
-app.value('contextPath', 'http://localhost:8180/app');
+app.value('contextPath', 'http://localhost:8180/app/api/v1');
 
 app.controller('productController', ['$scope', '$http', 'contextPath', function ($scope, $http, contextPath) {
 
         $scope.fillProductsTable = function () {
-            $http.get(contextPath + '/all-products')
+            $http.get(contextPath + '/products')
                 .then(function (response) {
                     $scope.ProductsList = response.data;
                 });
@@ -15,7 +15,7 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
             if (confirm("Do you want to add product «" + document.getElementsByName("titleNew")[0].value +
                 "» with cost " + document.getElementsByName("costNew")[0].value + "?")) {
                 $http({
-                    url: contextPath + '/add',
+                    url: contextPath + '/products',
                     method: 'post',
                     params: {
                         title: document.getElementsByName("titleNew")[0].value,
@@ -32,7 +32,7 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
         }
 
         $scope.minMaxCost = function () {
-            $http.get(contextPath + '/product/min-max')
+            $http.get(contextPath + '/products/'+ 'min-max')
                 .then(function (response) {
                         $scope.costMin = response.data[0];
                         $scope.costMax = response.data[1];
@@ -49,7 +49,7 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
 
         $scope.deleteProductById = function (productId, productTitle, productCost) {
             if (confirm("Do you want to delete product «" + productTitle + "» with ID=" + productId + " and Cost=" + productCost + "?")) {
-                $http.get(contextPath + '/delete/' + productId)
+                $http.delete(contextPath + '/products/' + productId)
                     .then(function (response) {
                             if (response.status === 204) {
                                 alert("Deleted");
@@ -90,7 +90,7 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
 
         $scope.findProduct = function () {
             if (confirm("Do you want to find product with ID=" + document.getElementsByName("finderId")[0].value + "?")) {
-                $http.get(contextPath + '/product/' + document.getElementsByName("finderId")[0].value)
+                $http.get(contextPath + '/products/' + document.getElementsByName("finderId")[0].value)
                     .then(function (response) {
                         if (response.data.length === 0) { //response.data.length&&response.data[0] === null
                             alert("No product with ID=" + document.getElementsByName("finderId")[0].value)
