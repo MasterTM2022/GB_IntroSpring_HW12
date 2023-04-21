@@ -39,7 +39,8 @@ public class DataGenerator {
         for (int i = 1; i <= NUMBER_START_PRODUCTS; i++) {
             Product p = new Product();
             p.setProductName(faker.food().ingredient());
-            p.setProductCost(faker.number().randomDouble(2, 1, 100));
+            p.setProductPrice(faker.number().randomDouble(2, 1, 100));
+            p.setProductCost(faker.number().randomDouble(2, 0, (int)p.getProductPrice()+1));
             productRepository.saveAndFlush(p);
         }
 

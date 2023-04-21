@@ -3,26 +3,26 @@ app.value('contextPath', 'http://localhost:8180/app/api/v1');
 
 app.controller('productController', ['$scope', '$http', 'contextPath', function ($scope, $http, contextPath) {
 
-        $scope.fillProductsTable = function () {
-            $http.get(contextPath + '/products')
-                .then(function (response) {
-                    $scope.ProductsList = response.data;
-                });
-            $scope.minMaxCost();
-        };
+        // $scope.fillProductsTable = function () {
+        //     $http.get(contextPath + '/products')
+        //         .then(function (response) {
+        //             $scope.ProductsList = response.data;
+        //         });
+        //     $scope.minMaxPrice();
+        // };
 
         $scope.addProduct = function () {
             if (confirm("Do you want to add product «" + document.getElementsByName("titleNew")[0].value +
-                "» with cost " + document.getElementsByName("costNew")[0].value + "?")) {
+                "» with price " + document.getElementsByName("priceNew")[0].value + "?")) {
                 $http({
                     url: contextPath + '/products',
                     method: 'post',
                     params: {
                         title: document.getElementsByName("titleNew")[0].value,
-                        cost: document.getElementsByName("costNew")[0].value
+                        price: document.getElementsByName("priceNew")[0].value
                     }
                 }).then(function () {
-                    $scope.fillProductsTable();
+                    $scope.applyFilter();
                     $('#addProduct')[0].reset();
                     alert("Added");
                 });
@@ -31,29 +31,32 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
             }
         }
 
-        $scope.minMaxCost = function () {
+        $scope.minMaxPrice = function () {
             $http.get(contextPath + '/products/'+ 'min-max')
                 .then(function (response) {
-                        $scope.costMin = response.data[0];
-                        $scope.costMax = response.data[1];
-                        document.getElementsByName("costMin")[0].value = $scope.costMin;
-                        document.getElementsByName("costMax")[0].value = $scope.costMax;
+                        $scope.priceMin = response.data[0];
+                        $scope.priceMax = response.data[1];
+                        document.getElementsByName("priceMin")[0].value = $scope.priceMin;
+                        document.getElementsByName("priceMax")[0].value = $scope.priceMax;
                     }
                 )
         }
 
         $scope.reset = function () {
-            $scope.fillProductsTable();
-            $scope.minMaxCost();
+            document.getElementsByName("id")[0].value = "";
+            document.getElementsByName("partTitle")[0].value = "";
+            $scope.id = document.getElementsByName("id")[0].value;
+            $scope.applyFilter(1);
         }
 
-        $scope.deleteProductById = function (productId, productTitle, productCost) {
-            if (confirm("Do you want to delete product «" + productTitle + "» with ID=" + productId + " and Cost=" + productCost + "?")) {
+        $scope.deleteProductById = function (productId, productTitle, productPrice) {
+            if (confirm("Do you want to delete product «" + productTitle + "» with ID=" + productId + " and Price=" + productPrice + "?")) {
                 $http.delete(contextPath + '/products/' + productId)
                     .then(function (response) {
                             if (response.status === 204) {
                                 alert("Deleted");
-                                $scope.fillProductsTable();
+                                $scope.reset();
+                                $scope.applyFilter();
                             }
                         }
                     ).catch((error) => {
@@ -62,7 +65,8 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
                         }
                         if (error.status === 404) {
                             alert("Product with id=" + productId + " was not found in DataBase");
-                            $scope.fillProductsTable();
+                            $scope.reset();
+                            $scope.applyFilter();
                         }
 
                     }
@@ -72,18 +76,24 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
             }
         }
 
-        $scope.applyFilter = function () {
-            $scope.costMin = document.getElementsByName("costMin")[0].value;
-            $scope.costMax = document.getElementsByName("costMax")[0].value;
+        $scope.applyFilter = function (pageIndex = 1) {
+            $scope.minMaxPrice();
+            $scope.id = document.getElementsByName("id")[0].value;
+            $scope.priceMin = document.getElementsByName("priceMin")[0].value;
+            $scope.priceMax = document.getElementsByName("priceMax")[0].value;
+            $scope.partTitle = document.getElementsByName("partTitle")[0].value;
             $http({
-                url: contextPath + '/product/filtered',
+                url: contextPath + '/products',
                 method: "get",
                 params: {
-                    costMin: $scope.costMin,
-                    costMax: $scope.costMax
+                    id: $scope.id ? $scope.id : null,
+                    priceMin: $scope.priceMin ? $scope.priceMin : null,
+                    priceMax: $scope.priceMax ? $scope.priceMax : null,
+                    partTitle: $scope.partTitle ? $scope.partTitle : null,
+                    pageIndex: $scope.pageIndex ? $scope.pageIndex : 1
                 }
             }).then(function (response) {
-                $scope.ProductsList = response.data;
+                $scope.ProductsList = response.data.content;
             })
 
         }
@@ -94,7 +104,7 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
                     .then(function (response) {
                         if (response.data.length === 0) { //response.data.length&&response.data[0] === null
                             alert("No product with ID=" + document.getElementsByName("finderId")[0].value)
-                            $scope.fillProductsTable();
+                            $scope.applyFilter();
                             document.getElementsByName("finderId").value = ''
                         } else {
                             alert("Found");
@@ -107,7 +117,7 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
             }
         }
 
-        $scope.fillProductsTable();
+        $scope.applyFilter();
     }
     ]
 )
@@ -116,7 +126,7 @@ app.controller('customerController', ['$scope', '$http', 'contextPath', function
         // const contextPath = 'http://localhost:8180/app';
 
         $scope.fillCustomersTable = function () {
-            $http.get(contextPath + '/all-customers')
+            $http.get(contextPath + '/customers')
                 .then(function (responseCustomers) {
                     $scope.CustomersList = responseCustomers.data;
                 });

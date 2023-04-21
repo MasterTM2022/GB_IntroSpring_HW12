@@ -22,6 +22,9 @@ public class Product {
     @Column(name = "product_name")
     private String productName;
 
+    @Column(name = "product_price")
+    private double productPrice;
+
     @Column(name = "product_cost")
     private double productCost;
 
@@ -30,7 +33,7 @@ public class Product {
         return "Product{" +
                 "id=" + id +
                 ", productName='" + productName + '\'' +
-                ", productCost=" + productCost +
+                ", productPrice=" + productPrice +
                 '}';
     }
 }

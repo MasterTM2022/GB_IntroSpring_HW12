@@ -1,6 +1,7 @@
 package ru.gb.perov.Part3HW8.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,16 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("")
-    public List<Product> findAllProducts() {
-        return productService.findAllProducts();
+    public Page<Product> findAll(
+            @RequestParam(name = "id", required = false) Long id,
+            @RequestParam(name = "minPrice", required = false) Double minPrice,
+            @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(name = "partTitle", required = false) String partTitle,
+            @RequestParam(name = "page", required = false) Integer page) {
+        if (page == null || page < 1 ) {
+            page = 1;
+        }
+        return productService.findAll(id, minPrice, maxPrice, partTitle, page);
     }
 
     @GetMapping("/{id}")
@@ -30,18 +39,18 @@ public class ProductController {
     }
 
     @PostMapping("")
-    public void addProduct(@RequestParam String title, @RequestParam Double cost) {
-        productService.addProduct(title, cost);
+    public void addProduct(@RequestParam String title, @RequestParam Double price) {
+        productService.addProduct(title, price);
     }
 
     @GetMapping("/filtered")
-    public List<Product> findAllBetween(@RequestParam Double costMin, @RequestParam Double costMax) {
-        return productService.findAllBetween(costMin, costMax);
+    public List<Product> findAllBetween(@RequestParam Double priceMin, @RequestParam Double priceMax) {
+        return productService.findAllBetween(priceMin, priceMax);
     }
 
     @GetMapping("/min-max")
-    public List<Double> findFullIntervalCost() {
-        return productService.findFullIntervalCost();
+    public List<Double> findFullIntervalPrice() {
+        return productService.findFullIntervalPrice();
     }
 
     @DeleteMapping("/{id}")

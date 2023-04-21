@@ -29,19 +29,28 @@
         <tr>
             <form name="filterForm">
                 <td>
-                    <label>Price Filter</label>
+                    <label for="id">ID</label>
                 </td>
                 <td>
-                    <label for="costMin">Min</label>
+                    <input class="form-control" type="number" name="id" id="id" size="5" step="1" min="1" pattern="/^\d+" placeholder="ID"/>
                 </td>
                 <td>
-                    <input class="form-control" type="number" name="costMin" id="costMin" size="50" step="0.01" min="0.01" pattern="/^\d+(.\d+)?$/" required/>
+                    <label for="partTitle">Title contains</label>
                 </td>
                 <td>
-                    <label for="costMax">Max</label>
+                    <input class="form-control" type="text" name="partTitle" id="partTitle" size="50" placeholder="part of title"/>
                 </td>
                 <td>
-                    <input class="form-control" type="number" name="costMax" id="costMax" size="50" step="0.01" min="0.01" pattern="/^\d+(.\d+)?$/" required/>
+                    <label for="priceMin">Min Price</label>
+                </td>
+                <td>
+                    <input class="form-control" type="number" name="priceMin" id="priceMin" size="50" step="0.01" min="0.00" pattern="/^\d+(.\d+)?$/" placeholder="from min priceID"/>
+                </td>
+                <td>
+                    <label for="priceMax">Max Price</label>
+                </td>
+                <td>
+                    <input class="form-control" type="number" name="priceMax" id="priceMax" size="50" step="0.01" min="0.00" pattern="/^\d+(.\d+)?$/" placeholder="to max price"/>
                 </td>
                 <td>
                     <label>
@@ -62,7 +71,7 @@
         <tr>
             <td>ID</td>
             <td>Title</td>
-            <td>Cost</td>
+            <td>Price</td>
             <td>Delete product</td>
         </tr>
 
@@ -71,9 +80,9 @@
         <tr ng-repeat="p in ProductsList">
             <td>{{p.id}}</td>
             <td>{{p.productName}}</td>
-            <td>{{p.productCost}}</td>
+            <td>{{p.productPrice}}</td>
             <td>
-                <button class="btn btn-danger" ng-click="deleteProductById(p.id, p.productName, p.productCost)">
+                <button class="btn btn-danger" ng-click="deleteProductById(p.id, p.productName, p.productPrice)">
                     Delete
                     product
                 </button>
@@ -90,7 +99,7 @@
                 </td>
                 <td>
                     <label>
-                        <input type="number" name="costNew" size="15" step="0.01" min="0.01"
+                        <input type="number" name="priceNew" size="15" step="0.01" min="0.01"
                                pattern="/^\d+(.\d+)?$/"
                                placeholder="in format 9.99" required/>
                     </label>

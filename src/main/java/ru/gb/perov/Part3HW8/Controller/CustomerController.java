@@ -9,7 +9,7 @@ import ru.gb.perov.Part3HW8.Service.CustomerService;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/api/v1/customers")
 
 public class CustomerController {
 
@@ -17,7 +17,7 @@ public class CustomerController {
     private CustomerService customerService;
 
 
-    @GetMapping("/all-customers")
+    @GetMapping("")
     public List<Customer> findAllCustomer() {
         return customerService.findAllCustomer();
     }
