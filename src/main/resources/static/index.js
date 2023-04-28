@@ -32,7 +32,7 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
         }
 
         $scope.minMaxPrice = function () {
-            $http.get(contextPath + '/products/'+ 'min-max')
+            $http.get(contextPath + '/products/' + 'min-max')
                 .then(function (response) {
                         $scope.priceMin = response.data[0];
                         $scope.priceMax = response.data[1];
@@ -43,10 +43,38 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
         }
 
         $scope.reset = function () {
+            $scope.minMaxPrice();
             document.getElementsByName("id")[0].value = "";
             document.getElementsByName("partTitle")[0].value = "";
             $scope.id = document.getElementsByName("id")[0].value;
             $scope.applyFilter(1);
+        }
+
+        $scope.addToCart = function (productId, productTitle, productPrice) {
+            if (confirm("Do you want to add product «" + productTitle + "» with ID=" + productId + " and Price=" + productPrice + " to the cart?")) {
+                $http.get(contextPath + '/products/' + productId + "/add_to_cart")
+                    .then(function (response) {
+                            if (response.status === 200) {
+                                alert("Added");
+                                $scope.reset();
+                                $scope.applyFilter();
+                            }
+                        }
+                    ).catch((error) => {
+                        if (error.status === 409) {
+                            alert("Product with id=" + productId + " can not be added to the cart.");
+                        }
+                        if (error.status === 404) {
+                            alert("Product with id=" + productId + " was not found in DataBase");
+                            $scope.reset();
+                            $scope.applyFilter();
+                        }
+
+                    }
+                )
+            } else {
+                alert("Canceled");
+            }
         }
 
         $scope.deleteProductById = function (productId, productTitle, productPrice) {
@@ -77,7 +105,6 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
         }
 
         $scope.applyFilter = function (pageIndex = 1) {
-            $scope.minMaxPrice();
             $scope.id = document.getElementsByName("id")[0].value;
             $scope.priceMin = document.getElementsByName("priceMin")[0].value;
             $scope.priceMax = document.getElementsByName("priceMax")[0].value;
@@ -87,8 +114,8 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
                 method: "get",
                 params: {
                     id: $scope.id ? $scope.id : null,
-                    priceMin: $scope.priceMin ? $scope.priceMin : null,
-                    priceMax: $scope.priceMax ? $scope.priceMax : null,
+                    minPrice: $scope.priceMin ? $scope.priceMin : null,
+                    maxPrice: $scope.priceMax ? $scope.priceMax : null,
                     partTitle: $scope.partTitle ? $scope.partTitle : null,
                     pageIndex: $scope.pageIndex ? $scope.pageIndex : 1
                 }
@@ -116,7 +143,7 @@ app.controller('productController', ['$scope', '$http', 'contextPath', function 
                 alert("Canceled");
             }
         }
-
+        $scope.minMaxPrice();
         $scope.applyFilter();
     }
     ]
@@ -129,10 +156,46 @@ app.controller('customerController', ['$scope', '$http', 'contextPath', function
             $http.get(contextPath + '/customers')
                 .then(function (responseCustomers) {
                     $scope.CustomersList = responseCustomers.data;
+                    console.log(responseCustomers.data);
                 });
         };
 
         $scope.fillCustomersTable();
 
+    }]
+)
+
+app.controller('cartController', ['$scope', '$http', 'contextPath', function ($scope, $http, contextPath) {
+        // const contextPath = 'http://localhost:8180/app';
+
+        $scope.fillCartTable = function () {
+            $http.get(contextPath + '/cart')
+                .then(function (responseCart) {
+                    $scope.CartList = responseCart.data;
+                    console.log(responseCart.data);
+                });
+        };
+
+        $scope.fillCartTable();
+
+    }]
+)
+
+app.controller('startController', ['$scope', '$http', 'contextPath', function ($scope, $http, contextPath) {
+        // const contextPath = 'http://localhost:8180/app';
+
+
+    $scope.login = function () {
+        $http({
+            url: '/app/auth/token',
+            method: 'post',
+            params: {
+                username: "user",
+                password: "pass"
+            }
+        })
+    };
+
+    $scope.login();
     }]
 )

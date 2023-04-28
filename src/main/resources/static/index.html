@@ -21,6 +21,9 @@
         <li class="nav-item">
             <h3><a class="nav-link active" aria-current="page" href="customers.html">Customer List</a></h3>
         </li>
+        <li class="nav-item">
+            <h3><a class="nav-link active" aria-current="page" href="cart.html">Cart</a></h3>
+        </li>
     </ul>
 </div>
 
@@ -72,6 +75,7 @@
             <td>ID</td>
             <td>Title</td>
             <td>Price</td>
+            <td>Add to cart</td>
             <td>Delete product</td>
         </tr>
 
@@ -81,6 +85,11 @@
             <td>{{p.id}}</td>
             <td>{{p.productName}}</td>
             <td>{{p.productPrice}}</td>
+            <td>
+                <button class="btn btn-success" ng-click="addToCart(p.id, p.productName, p.productPrice)">
+                    Add to cart
+                </button>
+            </td>
             <td>
                 <button class="btn btn-danger" ng-click="deleteProductById(p.id, p.productName, p.productPrice)">
                     Delete

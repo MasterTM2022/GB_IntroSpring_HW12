@@ -1,7 +1,7 @@
 package ru.gb.perov.Part3HW8.Service;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,10 +16,11 @@ import java.util.Optional;
 import static ru.gb.perov.Part3HW8.Repository.Specifications.ProductsSpecifications.*;
 
 @Service()
+@RequiredArgsConstructor
 public class ProductService {
+    private final ProductRepository productRepository;
+    private final CartService cartService;
 
-    @Autowired
-    private ProductRepository productRepository;
 
     public Page<Product> findAll(Long id, Double minPrice, Double maxPrice, String partTitle, Integer page){
         Specification<Product> spec = Specification.where(null);
@@ -35,14 +36,10 @@ public class ProductService {
         if (partTitle != null) {
             spec = spec.and(titleLike(partTitle));
         }
-        return productRepository.findAll(spec, PageRequest.of(page - 1, 5));
+        return productRepository.findAll(spec, PageRequest.of(page - 1, 25));
     }
 
-    public List<Product> findAllProducts() {
-        return productRepository.findAll();
-    }
-
-    public ArrayList<Optional<Product>> findProductById(Long id) {
+    public List<Optional<Product>> findProductById(Long id) {
         ArrayList<Optional<Product>> products = new ArrayList();
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
@@ -75,5 +72,14 @@ public class ProductService {
 
     public List<Product> findAllBetween(Double minParam, Double maxParam) {
         return productRepository.findAllBetween(Math.min(minParam, maxParam), Math.max(minParam, maxParam));
+    }
+
+    public void addProductToCart(Long id) {
+        try {
+            cartService.addProductToCart(id);
+        } catch (Exception e) {
+            System.out.println("Product with ID=" + id + " not found...");
+        }
+        cartService.findAll();
     }
 }

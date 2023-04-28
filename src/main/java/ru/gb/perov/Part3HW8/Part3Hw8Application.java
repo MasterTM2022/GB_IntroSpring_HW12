@@ -3,7 +3,6 @@ package ru.gb.perov.Part3HW8;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import ru.gb.perov.Part3HW8.Utils.SessionFactoryUtils;
 
 @SpringBootApplication
 @EntityScan("ru.gb.perov.Part3HW8.Data")
